@@ -25,7 +25,7 @@ isEmpty(PREFIX){
     PREFIX=/usr/local
 }
 
-unix {
+linux-g++: {
     desktopEntry.path = $$PREFIX/share/applications/
     desktopEntry.files = qPutty.desktop
 
@@ -34,7 +34,9 @@ unix {
     INSTALLS+=target desktopEntry
 }
 
-macx {
+macx: {
+    INCLUDEPATH += /opt/local/include
+
     ICON = putty-32.png
     QMAKE_PKGINFO_TYPEINFO = qtty
     QMAKE_INFO_PLIST = Info.plist

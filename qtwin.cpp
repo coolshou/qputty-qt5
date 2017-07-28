@@ -44,7 +44,7 @@ typedef WId WID;
 typedef long WID;
 #endif
 
-#ifdef Q_OS_UNIX
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
 #include <QX11Info>
 #define DEFAULT_FONT "Courier New,10"
 typedef long WID;
@@ -643,7 +643,11 @@ void cmdline_error(const char *p, ...)
 char *gdk_get_display()
 {
 #ifdef Q_OS_UNIX
+#ifdef Q_OS_MAC
+    return (char*)XOpenDisplay(NULL);
+#else
     return (char*)QX11Info::display();
+#endif
 #else
     return 0;
 #endif

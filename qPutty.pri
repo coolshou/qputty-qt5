@@ -4,10 +4,10 @@ isEmpty(QPUTTY_HOME){
     QPUTTY_HOME=.
 }
 isEmpty(PUTTY_HOME){
-    PUTTY_HOME=./putty
+    PUTTY_HOME=$$_PRO_FILE_PWD_/putty
 }
 isEmpty(KERBEROS){
-    KERBEROS=yes
+    KERBEROS=no
     isEmpty(GSSGLUE){
         macx {
             GSSGLUE=no
@@ -126,7 +126,12 @@ win32{
     }
 } else {
     INCLUDEPATH *= $$PUTTY_HOME/unix
+    linux-g++ :{
     LIBS *= -ldl -lX11
+    }
+    macx: {
+    LIBS *= -ldl /opt/local/lib/libX11.dylib
+    }
     QMAKE_CXXFLAGS *= -Wno-write-strings
     SOURCES *= $$PUTTY_HOME/time.c \ 
             $$PUTTY_HOME/unix/ux_x11.c \
