@@ -262,6 +262,12 @@ QPutty::scroll(int lines)
 }
 
 #ifdef Q_OS_WIN
+bool QPutty::nativeEvent(const QByteArray & eventType, void * message, long *result)
+{
+    MSG* msg = reinterpret_cast<MSG*>(message);
+    return winEvent(msg, result);
+}
+
 bool
 QPutty::winEvent(MSG*msg,long* result)
 {

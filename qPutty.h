@@ -58,6 +58,7 @@ class QPutty: public QWidget
     virtual void close(int exitCode);
     virtual void scroll(int lines);
 #ifdef Q_OS_WIN
+    bool nativeEvent(const QByteArray & eventType, void * message, long *result);
     bool winEvent(MSG* msg,long* result);
 #else
     uxsel_id *registerFd(int fd,int rwx);

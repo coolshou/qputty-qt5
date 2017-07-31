@@ -25,10 +25,8 @@
 #include <ctype.h>
 #include <string.h>
 
-#ifdef Q_OS_WIN
 const int share_can_be_downstream = TRUE;
 const int share_can_be_upstream = TRUE;
-#endif
 
 int handleHostnameCmdlineParam(char* arg,Conf *conf)
 {

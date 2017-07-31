@@ -262,7 +262,7 @@ FontSpec *dlg_fontsel_get(union control *ctrl, void *dlg)
 {
 #ifdef Q_OS_WIN
     /* + HACK by INDIO */
-    return fontspec_new("Courier New", 0, 10, ANSI_CHARSET);
+    return fontspec_new("Courier New", 0, 1, ANSI_CHARSET);
     /* - HACK by INDIO */
 
     struct dlgparam *dp = (struct dlgparam *)dlg;
