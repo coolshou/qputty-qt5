@@ -228,6 +228,7 @@ void dlg_fontsel_set(union control *ctrl, void *dlg, FontSpec *fs)
     ((ConfigWidget*)dlg)->setFileBox(ctrl,fs->name);
 }
 
+#ifdef Q_OS_WIN
 static int winctrl_cmp_byctrl_find(void *av, void *bv)
 {
     union control *a = (union control *)av;
@@ -255,6 +256,7 @@ static struct winctrl *dlg_findbyctrl(struct dlgparam *dp, union control *ctrl)
     }
     return NULL;
 }
+#endif
 
 FontSpec *dlg_fontsel_get(union control *ctrl, void *dlg)
 {

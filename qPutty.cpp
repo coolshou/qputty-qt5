@@ -655,7 +655,7 @@ QPutty::createTerminalWidget()
 void 
 QPutty::contextMenuEvent(QContextMenuEvent* event)
 {
-    if((event->modifiers() & Qt::ControlModifier) || conf_get_int(_inst.conf, CONF_mouse_is_xterm)==2)
+    //if((event->modifiers() & Qt::ControlModifier) || conf_get_int(_inst.conf, CONF_mouse_is_xterm)==2)
     {
         QMenu* menu=new QMenu(this);
         _terminalWidget->contextMenu(menu);

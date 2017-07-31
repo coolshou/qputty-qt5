@@ -509,6 +509,7 @@ goAhead:
 void 
 Widget::wheelEvent(QWheelEvent* e)
 {
+#ifdef Q_OS_WIN
     if(e->orientation()==Qt::Vertical)
     {
         int scrollLines=e->delta()/120*QApplication::wheelScrollLines();
@@ -525,6 +526,7 @@ Widget::wheelEvent(QWheelEvent* e)
         }
         term_scroll(_inst->term,0,-scrollLines);
     }
+#endif
     e->accept();
 }
 

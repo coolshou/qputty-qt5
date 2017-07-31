@@ -141,5 +141,7 @@ char *platform_get_x_display(void) {
     return dupstr(display);
 }
 
+#ifndef Q_OS_WIN
 const int share_can_be_downstream = TRUE;
 const int share_can_be_upstream = TRUE;
+#endif
