@@ -14,12 +14,14 @@ DEFINES *= VERSION=\\\"$$VERSION\\\" PUTTY_VERSION=\\\"$$PUTTY_SRC_VERSION\\\"
 CONFIG(debug,debug|release) {
     message("MODE: Debug")
 }
+
 CONFIG(release,debug|release) {
     message("MODE: Release")
     CONFIG *= silent warn_off
 }
 
 SOURCES *= putty.cpp
+HEADERS *= platform.h
 
 isEmpty(PREFIX){
     PREFIX=/usr/local

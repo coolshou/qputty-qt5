@@ -154,7 +154,8 @@ ConfigWidget::fill(Conf* conf,QDialog* parent,int midSession,int protCfgInfo)
     setup_config_box(ctrlbox,midSession,conf_get_int(_conf, CONF_protocol),protCfgInfo);
 #ifdef Q_OS_WIN
     WId w=winId();
-    win_setup_config_box(ctrlbox,&w,has_help(),midSession,conf_get_int(_conf, CONF_protocol));
+    HWND casting=(HWND)w;
+    win_setup_config_box(ctrlbox, &casting, has_help(), midSession, conf_get_int(_conf, CONF_protocol));
 #endif
 #ifdef Q_OS_UNIX
     unix_setup_config_box(ctrlbox,midSession,conf_get_int(_conf, CONF_protocol));

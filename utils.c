@@ -25,6 +25,9 @@
 #include <ctype.h>
 #include <string.h>
 
+const int share_can_be_downstream = TRUE;
+const int share_can_be_upstream = TRUE;
+
 int handleHostnameCmdlineParam(char* arg,Conf *conf)
 {
     /*

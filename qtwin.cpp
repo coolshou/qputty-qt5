@@ -50,6 +50,9 @@ typedef long WID;
 typedef long WID;
 #endif
 
+const int share_can_be_downstream = TRUE;
+const int share_can_be_upstream = TRUE;
+
 #include <QDebug>
 #include <QFont>
 #include <QFontMetrics>
@@ -77,10 +80,12 @@ extern "C" {
 #include <X11/Xatom.h>
 extern int use_pty_argv;
 #else
+#include "putty/charset/charset.h"
+
     char *do_select(SOCKET skt, int startup);
     void write_aclip(void *frontend, char *data, int len, int must_deselect);
     void cleanup_exit(int code);
-    Backend *select_backend(Config *cfg);
+    Backend *select_backend(Conf *cfg);
     #define WM_IGNORE_CLIP (WM_APP + 2)
     const int use_pty_argv = FALSE;
 #endif
@@ -572,7 +577,7 @@ int char_width(Context , int )
 Context get_ctx(void *frontend)
 {
 #ifdef Q_OS_WIN
-    return get_windowid(0)?GetDC(get_windowid(0)):0;
+    return get_windowid(0)?GetDC((HWND)get_windowid(0)):0;
 #else
     struct gui_data *inst = (struct gui_data *)frontend;
     struct draw_ctx *dctx;
@@ -586,7 +591,7 @@ Context get_ctx(void *frontend)
 void free_ctx(Context ctx)
 {
 #ifdef Q_OS_WIN
-    ReleaseDC(get_windowid(0),ctx);
+    ReleaseDC((HWND)get_windowid(0),ctx);
 #else
     struct draw_ctx *dctx = (struct draw_ctx *)ctx;
     sfree(dctx);
@@ -738,41 +743,49 @@ int do_cmdline(int argc, char **argv, int do_everything, int *allow_launch,
         }
 
 	if (!strcmp(p, "-fn") || !strcmp(p, "-font")) {
+#ifdef Q_OS_UNIX
         FontSpec *fs;
 	    EXPECTS_ARG;
         SECOND_PASS_ONLY;
         fs = fontspec_new(val);
         conf_set_fontspec(conf, CONF_font, fs);
         fontspec_free(fs);
+#endif
 	} else if (!strcmp(p, "-fb")) {
+#ifdef Q_OS_UNIX
         FontSpec *fs;
 	    EXPECTS_ARG;
 	    SECOND_PASS_ONLY;
         fs = fontspec_new(val);
         conf_set_fontspec(conf, CONF_boldfont, fs);
         fontspec_free(fs);
+#endif
 	} else if (!strcmp(p, "-fw")) {
+#ifdef Q_OS_UNIX
         FontSpec *fs;
 	    EXPECTS_ARG;
 	    SECOND_PASS_ONLY;
         fs = fontspec_new(val);
         conf_set_fontspec(conf, CONF_widefont, fs);
         fontspec_free(fs);
+#endif
 	} else if (!strcmp(p, "-fwb")) {
+#ifdef Q_OS_UNIX
         FontSpec *fs;
 	    EXPECTS_ARG;
 	    SECOND_PASS_ONLY;
         fs = fontspec_new(val);
         conf_set_fontspec(conf, CONF_wideboldfont, fs);
         fontspec_free(fs);
+#endif
 	} else if (!strcmp(p, "-cs")) {
 	    EXPECTS_ARG;
 	    SECOND_PASS_ONLY;
         conf_set_str(conf, CONF_line_codepage, val);
 
-	} else if (!strcmp(p, "-geometry")) {
+    } else if (!strcmp(p, "-geometry")) {
 #ifdef Q_OS_UNIX
-	    int flags, x, y;
+        int flags, x, y;
 	    unsigned int w, h;
 	    EXPECTS_ARG;
 	    SECOND_PASS_ONLY;
@@ -902,7 +915,7 @@ int do_cmdline(int argc, char **argv, int do_everything, int *allow_launch,
 
         else if(p[0] != '-' && (!do_everything ||
 #ifdef Q_OS_WIN
-                                (*allow_launch=handleHostnameCmdlineParam(p,cfg->host,sizeof(cfg->host)))
+                                (*allow_launch=handleHostnameCmdlineParam(p,conf))
 #else
                                 process_nonoption_arg(p, conf, allow_launch)
 #endif
@@ -962,7 +975,7 @@ void setup_fonts_ucs(struct gui_data *inst)
     inst->font_height = fm.height();
 
 #ifdef Q_OS_WIN
-    init_ucs(&inst->cfg,&inst->ucsdata);
+    init_ucs(inst->conf, &(inst->ucsdata));
 #else
     if(!ConfigWidget::isValidFont(*inst->fonts[0]))
     {
@@ -1045,7 +1058,7 @@ char *do_select(SOCKET skt, int startup)
     }
     if (!hwnd)
        return "do_select(): internal error (hwnd==NULL)";
-    if (p_WSAAsyncSelect(skt, hwnd, msg, events) == SOCKET_ERROR) 
+    if (p_WSAAsyncSelect(skt, (HWND)hwnd, msg, events) == SOCKET_ERROR)
     {
        switch (p_WSAGetLastError()) 
        {
@@ -1095,7 +1108,7 @@ void cleanup_exit(int code)
     exit(code);
 }
 
-Backend* select_backend(Config *cfg)
+Backend* select_backend(Conf *cfg)
 {
 #ifdef PUTTY_RELEASE
     int i;
@@ -1106,7 +1119,7 @@ Backend* select_backend(Config *cfg)
             break;
         }
 #else
-    Backend *back = backend_from_proto(cfg->protocol);
+    Backend *back = backend_from_proto(conf_get_int(cfg, CONF_protocol));
 #endif
     assert(back != NULL);
     return back;

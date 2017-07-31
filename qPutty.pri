@@ -13,12 +13,16 @@ isEmpty(KERBEROS){
             GSSGLUE=no
             DEFINES *= STATIC_GSSAPI NO_LIBDL
         } else {
-            GSSGLUE=yes
+            GSSGLUE=no
         }
     }
 }
 isEmpty(GEN_SBCSDAT){
-    GEN_SBCSDAT=yes
+    unix: {
+        GEN_SBCSDAT=yes
+    } else {
+        GEN_SBCSDAT=no
+    }
 }
 isEmpty(PUTTY_RELEASE){
     PUTTY_RELEASE=no
@@ -34,6 +38,7 @@ SOURCES *= $$PUTTY_HOME/be_all_s.c \
         $$PUTTY_HOME/config.c \
         $$PUTTY_HOME/cproxy.c \
         $$PUTTY_HOME/dialog.c \
+        $$PUTTY_HOME/errsock.c \
         $$PUTTY_HOME/ldisc.c \
         $$PUTTY_HOME/ldiscucs.c \
         $$PUTTY_HOME/logging.c \
@@ -89,7 +94,7 @@ SOURCES *= $$PUTTY_HOME/be_all_s.c \
 
 win32{
     INCLUDEPATH *= $$PUTTY_HOME/windows
-    LIBS *= -lcomctl32 -luser32 -ladvapi32 -lcomdlg32 -lgdi32 -lshell32 -lwinspool -lkernel32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32
+    LIBS *= -lcomctl32 -luser32 -lcrypt32 -ladvapi32 -lcomdlg32 -lgdi32 -lshell32 -lwinspool -lkernel32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32
     DEFINES -= UNICODE
     DEFINES *= _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_WARNINGS _WINDOWS SECURITY_WIN32
     SOURCES *= $$PUTTY_HOME/windows/winmisc.c \
@@ -100,11 +105,16 @@ win32{
             $$PUTTY_HOME/windows/winnoise.c \
             $$PUTTY_HOME/windows/winprint.c \
             $$PUTTY_HOME/windows/winproxy.c \
+            $$PUTTY_HOME/windows/winsecur.c \
             $$PUTTY_HOME/windows/winser.c \
             $$PUTTY_HOME/windows/winstore.c \
             $$PUTTY_HOME/windows/winucs.c \
+            $$PUTTY_HOME/windows/winhsock.c \
+            $$PUTTY_HOME/windows/winnps.c \
+            $$PUTTY_HOME/windows/winnpc.c \
             $$PUTTY_HOME/windows/winhandl.c \
             $$PUTTY_HOME/windows/winhelp.c \
+            $$PUTTY_HOME/windows/wincapi.c \
             $$PUTTY_HOME/windows/winpgntc.c \
             $$PUTTY_HOME/windows/winshare.c \
             $$PUTTY_HOME/windows/winutils.c

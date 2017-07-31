@@ -25,7 +25,7 @@
 #define _PLATFORM_H_
 
 #ifdef Q_OS_WIN
-    extern "C" int select_result(WPARAM,LPARAM);
+    extern "C" void select_result(WPARAM,LPARAM);
     extern "C++" { 
     int do_config_box(const char *title, Conf *conf, int midsession, int protcfginfo);
     int reallyclose(void *frontend);

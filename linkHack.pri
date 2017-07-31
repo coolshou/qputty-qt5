@@ -18,8 +18,8 @@ TARGETS=$$OBJECTS_DIR/sbcsdat$$QMAKE_EXT_OBJ
 }
 
 win32 {
-    OBJECTS_DIR=($$replace(OBJECTS_DIR,/,\))
-    TARGETS=($$replace(TARGETS,/,\))
+#    OBJECTS_DIR=($$replace(OBJECTS_DIR,/,\))
+#    TARGETS=($$replace(TARGETS,/,\))
 }
 
 QMAKE_EXTRA_TARGETS*=$$TARGETS
@@ -30,7 +30,7 @@ QMAKE_CLEAN*=$$TARGETS
 sbcsdat_o_dep=$$PUTTY_HOME/charset/sbcsdat.c $$PUTTY_HOME/charset/charset.h $$PUTTY_HOME/charset/internal.h
 
 win32 {
-    $$OBJECTS_DIR\sbcsdat.obj.depends=$$sbcsdat_o_dep
+    $$OBJECTS_DIR/sbcsdat.obj.depends=$$sbcsdat_o_dep
 } else {
     $$OBJECTS_DIR/sbcsdat.o.depends=$$sbcsdat_o_dep
     $$OBJECTS_DIR/sbcsdat.o.commands=$(CC) -c $(CFLAGS) $(INCPATH) -o $$OBJECTS_DIR/sbcsdat$$QMAKE_EXT_OBJ $$PUTTY_HOME/charset/sbcsdat.c

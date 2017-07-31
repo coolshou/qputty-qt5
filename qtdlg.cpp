@@ -228,9 +228,41 @@ void dlg_fontsel_set(union control *ctrl, void *dlg, FontSpec *fs)
     ((ConfigWidget*)dlg)->setFileBox(ctrl,fs->name);
 }
 
+static int winctrl_cmp_byctrl_find(void *av, void *bv)
+{
+    union control *a = (union control *)av;
+    struct winctrl *b = (struct winctrl *)bv;
+    if (a < b->ctrl)
+    return -1;
+    else if (a > b->ctrl)
+    return +1;
+    else
+    return 0;
+}
+struct winctrl *winctrl_findbyctrl(struct winctrls *wc, union control *ctrl)
+{
+    return (winctrl *)find234(wc->byctrl, ctrl, winctrl_cmp_byctrl_find);
+}
+
+static struct winctrl *dlg_findbyctrl(struct dlgparam *dp, union control *ctrl)
+{
+    int i;
+
+    for (i = 0; i < dp->nctrltrees; i++) {
+    struct winctrl *c = winctrl_findbyctrl(dp->controltrees[i], ctrl);
+    if (c)
+        return c;
+    }
+    return NULL;
+}
+
 FontSpec *dlg_fontsel_get(union control *ctrl, void *dlg)
 {
 #ifdef Q_OS_WIN
+    /* + HACK by INDIO */
+    return fontspec_new("Courier New", 0, 10, ANSI_CHARSET);
+    /* - HACK by INDIO */
+
     struct dlgparam *dp = (struct dlgparam *)dlg;
     struct winctrl *c = dlg_findbyctrl(dp, ctrl);
     assert(c && c->ctrl->generic.type == CTRL_FONTSELECT);
